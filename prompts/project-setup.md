@@ -8,7 +8,7 @@ Backend: C# .NET 9 Web API.
 
 Frontend: Blazor WebAssembly (or Blazor Server, prioritize Wasm if possible for a true SPA, but ensure SignalR connectivity). The entire application must be a Single-Page Web App (SPA).
 
-Real-time Communication: Use ASP.NET Core SignalR for real-time push updates (NFR-RT: task.created, task.updated, tracker.updated, reminder.due).
+Real-time Communication: Use ASP.NET Core SignalR (USE LOACALLY HOSTED SIGNALR) for real-time push updates (NFR-RT: task.created, task.updated, tracker.updated, reminder.due).
 
 AI Integration: Use the Azure OpenAI Service SDK (or equivalent HttpClient integration) to connect to a deployed GPT-4o (or similar) model.
 
