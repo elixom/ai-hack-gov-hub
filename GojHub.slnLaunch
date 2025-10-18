@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "RunBoth",
+    "Projects": [
+      {
+        "Path": "src\\GovHub-api\\GovHub-api.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "src\\GovHub-app\\GovHub-app.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      }
+    ]
+  }
+]
