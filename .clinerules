@@ -1,9 +1,9 @@
 # Project Tech Stack and Rules
 
 ## Tech Stack
-- **Framework**: .NET 8.0, ASP.NET Core MVC
+- **Framework**: .NET 9.0, ASP.NET Core MVC
 - **Language**: C# 12
-- **Database**: Azure SQL Server, Entity Framework Core 8.0
+- **Database**: Azure SQL Server, Entity Framework Core 
 - **Authentication**: ASP.NET Core Identity with Google/Microsoft SSO
 - **Cloud Services**: 
   - Azure OpenAI for AI/ML capabilities
@@ -12,18 +12,15 @@
 - **Frontend**: 
   - Bootstrap 5.3+
   - jQuery 3.7+
-  - MathJax for equation rendering
   - Bootstrap Icons
 - **Development Tools**:
-  - Visual Studio 2022+
   - Visual Studio Code with C# Dev Kit
   - Azure CLI/PowerShell
-  - Terraform for IaC
 
 ## Coding Standards
 ### Documentation
 - Read the docs/AiKnowledgeBase.md for contextual details about the solution.
-- Update  docs/AiKnowledgeBase.md with learnings
+- Update docs/AiKnowledgeBase.md with learnings
 - Add any incomplete or placeholder tasks to the docs/TODO.md file
 - Read the README.md if you need a high level understanding of the solution.
 - Maintain and update as necessary the README.md
@@ -133,7 +130,8 @@ The design should be:
 - Focused on accessibility and clear call-to-actions.
 - Prioritize hierarchy, typography, and visual storytelling. Think Apple-level polish with the usability of Notion or Linear.
 - Use a soft, neutral color palette with accent colors for key actions.
-- Put all the styles in linked stylesheets. Do not embed <style> tags in views.
+- Put all the styles in linked stylesheets. Do not embed <style> tags in views (.cshtml files). 
+
 
 ### Code Organization
 - Follow Clean Architecture principles
@@ -162,7 +160,6 @@ The design should be:
 - Use proper defaults
 
 ### Deployment
-- Use Infrastructure as Code (Terraform)
 - Implement proper CI/CD
 - Use proper environment separation
 - Implement blue-green deployment
@@ -200,8 +197,8 @@ The design should be:
 - Implement fallback options
 
 ### Project Structure
-- core code, entities models, services, database migrations go inthe mentant-lib project
-- the main user interface goes in the mentat-app project
-- admistrative functions go in the mentat-admin project
+- core code, entities models, services, database migrations go in the GovHub-lib project
+- the main user interface goes in the GovHub-app project
+- admistrative functions go in the GovHub-admin project
 - You may create new files as you see fit but always ask before editing or replacing existing files.
-- The mentat-app project has a `wwwroot/help` folder which contain markdown files with instuctions (game rules) for users
+- The GovHub-app project has a `wwwroot/help` folder which contain markdown files with instuctions (game rules) for users
