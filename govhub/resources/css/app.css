@@ -1,0 +1,76 @@
+/* Font imports - Must come before other statements */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Set default font */
+body {
+    font-family: "Open Sans", sans-serif;
+    @apply text-gray-800;
+}
+
+/* Heading styles */
+.font-heading {
+    font-family: "Montserrat", sans-serif;
+}
+
+/* Animation for hover effects */
+a,
+button {
+    @apply transition-all cursor-pointer disabled:cursor-not-allowed;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-slate-200;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-green-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-green-400;
+}
+
+/* Tailwind component classes */
+@layer components {
+    .btn {
+        @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium transition duration-300 ease-in-out rounded-lg cursor-pointer disabled:scale-100 hover:scale-105 focus:outline-none focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed;
+    }
+
+    .btn-primary {
+        @apply font-semibold text-white bg-gradient-to-r from-sky-500 to-blue-700 focus:ring-blue-600;
+    }
+
+    .btn-secondary {
+        @apply font-semibold text-white bg-gradient-to-r from-green-500 to-green-600 focus:ring-green-600;
+    }
+
+    .btn-success {
+        @apply font-semibold text-white bg-green-600 bg-gradient-to-r from-green-500 to-green-600 focus:ring-green-500;
+    }
+
+    .btn-danger {
+        @apply font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 focus:ring-red-500;
+    }
+
+    .btn-warning {
+        @apply font-semibold text-yellow-900 bg-gradient-to-r from-yellow-400 to-yellow-500 focus:ring-yellow-500;
+    }
+
+    .btn-gray {
+        @apply font-semibold text-white from-gray-600 bg-gradient-to-r to-gray-800 focus:ring-gray-600;
+    }
+
+    .btn-outline {
+        @apply text-gray-700 bg-transparent border border-gray-300 hover:bg-gray-50 focus:ring-gray-500;
+    }
+}

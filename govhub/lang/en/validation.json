@@ -1,0 +1,139 @@
+{
+    "accepted": "Value must be accepted.",
+    "accepted_if": "Value must be accepted when :other is :value.",
+    "active_url": "The :attribute is not a valid URL.",
+    "after": "Value must be a date after :date.",
+    "after_or_equal": "Value must be a date after or equal to :date.",
+    "alpha": "Value must only contain letters.",
+    "alpha_dash": "Value must only contain letters, numbers, dashes and underscores.",
+    "alpha_num": "Value must only contain letters and numbers.",
+    "array": "Value must be an array.",
+    "before": "Value must be a date before :date.",
+    "before_or_equal": "Value must be a date before or equal to :date.",
+    "between": {
+        "array": "Value must have between :min and :max items.",
+        "file": "Value must be between :min and :max kilobytes.",
+        "numeric": "Value must be between :min and :max.",
+        "string": "Value must be between :min and :max characters."
+    },
+    "boolean": "This field must be true or false.",
+    "confirmed": "The :attribute confirmation does not match.",
+    "current_password": "The password is incorrect.",
+    "date": "The :attribute is not a valid date.",
+    "date_equals": "Value must be a date equal to :date.",
+    "date_format": "The :attribute does not match the format :format.",
+    "declined": "Value must be declined.",
+    "declined_if": "Value must be declined when :other is :value.",
+    "different": "The :attribute and :other must be different.",
+    "digits": "Value must be :digits digits.",
+    "digits_between": "Value must be between :min and :max digits.",
+    "dimensions": "The :attribute has invalid image dimensions.",
+    "distinct": "This field has a duplicate value.",
+    "doesnt_end_with": "Value may not end with one of the following: :values.",
+    "doesnt_start_with": "Value may not start with one of the following: :values.",
+    "email": "Value must be a valid email address.",
+    "ends_with": "Value must end with one of the following: :values.",
+    "enum": "The selected :attribute is invalid.",
+    "exists": "The selected :attribute is invalid.",
+    "file": "Value must be a file.",
+    "filled": "This field must have a value.",
+    "gt": {
+        "array": "Value must have more than :value items.",
+        "file": "Value must be greater than :value kilobytes.",
+        "numeric": "Value must be greater than :value.",
+        "string": "Value must be greater than :value characters."
+    },
+    "gte": {
+        "array": "Value must have :value items or more.",
+        "file": "Value must be greater than or equal to :value kilobytes.",
+        "numeric": "Value must be greater than or equal to :value.",
+        "string": "Value must be greater than or equal to :value characters."
+    },
+    "image": "Value must be an image.",
+    "in": "The selected :attribute is invalid.",
+    "in_array": "This field does not exist in :other.",
+    "integer": "Value must be an integer.",
+    "ip": "Value must be a valid IP address.",
+    "ipv4": "Value must be a valid IPv4 address.",
+    "ipv6": "Value must be a valid IPv6 address.",
+    "json": "Value must be a valid JSON string.",
+    "lowercase": "Value must be lowercase.",
+    "lt": {
+        "array": "Value must have less than :value items.",
+        "file": "Value must be less than :value kilobytes.",
+        "numeric": "Value must be less than :value.",
+        "string": "Value must be less than :value characters."
+    },
+    "lte": {
+        "array": "Value must not have more than :value items.",
+        "file": "Value must be less than or equal to :value kilobytes.",
+        "numeric": "Value must be less than or equal to :value.",
+        "string": "Value must be less than or equal to :value characters."
+    },
+    "mac_address": "Value must be a valid MAC address.",
+    "max": {
+        "array": "Value must not have more than :max items.",
+        "file": "Value must not be greater than :max kilobytes.",
+        "numeric": "Value must not be greater than :max.",
+        "string": "Value must not be greater than :max characters."
+    },
+    "max_digits": "Value must not have more than :max digits.",
+    "mimes": "Value must be a file of type: :values.",
+    "mimetypes": "Value must be a file of type: :values.",
+    "min": {
+        "array": "Value must have at least :min items.",
+        "file": "Value must be at least :min kilobytes.",
+        "numeric": "Value must be at least :min.",
+        "string": "Value must be at least :min characters."
+    },
+    "min_digits": "Value must have at least :min digits.",
+    "multiple_of": "Value must be a multiple of :value.",
+    "not_in": "The selected :attribute is invalid.",
+    "not_regex": "The :attribute format is invalid.",
+    "numeric": "Value must be a number.",
+    "password": {
+        "letters": "Value must contain at least one letter.",
+        "mixed": "Value must contain at least one uppercase and one lowercase letter.",
+        "numbers": "Value must contain at least one number.",
+        "symbols": "Value must contain at least one symbol.",
+        "uncompromised": "The given :attribute has appeared in a data leak. Please choose a different :attribute."
+    },
+    "present": "This field must be present.",
+    "prohibited": "This field is prohibited.",
+    "prohibited_if": "This field is prohibited when :other is :value.",
+    "prohibited_unless": "This field is prohibited unless :other is in :values.",
+    "prohibits": "This field prohibits :other from being present.",
+    "regex": "The :attribute format is invalid.",
+    "required": "This field is required.",
+    "required_array_keys": "This field must contain entries for: :values.",
+    "required_if": "This field is required.",
+    "required_if_accepted": "This field is required.",
+    "required_unless": "This field is required.",
+    "required_with": "This field is required.",
+    "required_with_all": "This field is required.",
+    "required_without": "This field is required.",
+    "required_without_all": "This field is required.",
+    "same": "The :attribute and :same must match.",
+    "size": {
+        "array": "Value must contain :size items.",
+        "file": "Value must be :size kilobytes.",
+        "numeric": "Value must be :size.",
+        "string": "Value must be :size characters."
+    },
+    "starts_with": "Value must start with one of the following: :values.",
+    "string": "Value must be a string.",
+    "timezone": "Value must be a valid timezone.",
+    "unique": "The :attribute has already been taken.",
+    "uploaded": "The :attribute failed to upload.",
+    "uppercase": "Value must be uppercase.",
+    "url": "Value must be a valid URL.",
+    "uuid": "Value must be a valid UUID.",
+
+    "custom": {
+        "attribute-name": {
+            "rule-name": "custom-message"
+        }
+    },
+
+    "attributes": {}
+}

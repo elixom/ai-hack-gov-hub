@@ -1,0 +1,59 @@
+# Laravel
+*.log
+.DS_Store
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+.fleet
+.idea
+.nova
+.phpunit.cache
+.vscode
+.zed
+auth.json
+node_modules
+public/build
+public/hot
+public/storage
+storage/*.key
+storage/pail
+vendor
+Homestead.json
+Homestead.yaml
+Thumbs.db
+
+# Additional development files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Temporary folders
+tmp/
+temp/
