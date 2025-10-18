@@ -1,0 +1,367 @@
+@page "/"
+@page "/chat"
+@using Microsoft.AspNetCore.SignalR.Client
+@using GovHub.Lib.Models
+@using GovHub.Lib.DTOs
+@using GovHub.Lib.Enums
+@using System.Text.Json
+@inject HttpClient Http
+@inject ILogger<Chat> Logger
+@implements IAsyncDisposable
+
+<PageTitle>GOJ Hub Assistant</PageTitle>
+
+<div class="chat-container">
+    <div class="chat-main">
+        <div class="chat-header">
+            <h3>GOJ Hub Assistant</h3>
+            <p class="text-muted">Your guide to Jamaican government services</p>
+        </div>
+
+        <div class="chat-messages" @ref="messagesContainer">
+            @foreach (var message in messages)
+            {
+                <div class="message @GetMessageClass(message.Role)">
+                    <div class="message-content">
+                        <div class="message-text">@message.Text</div>
+                        
+                        @if (message.RichContentType != null && !string.IsNullOrEmpty(message.RichContentJson))
+                        {
+                            <div class="rich-content">
+                                @RenderRichContent(message)
+                            </div>
+                        }
+                        
+                        <div class="message-timestamp">@message.Timestamp.ToLocalTime().ToString("hh:mm tt")</div>
+                    </div>
+                </div>
+            }
+            
+            @if (isLoading)
+            {
+                <div class="message message-assistant">
+                    <div class="message-content">
+                        <div class="typing-indicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="chat-input-container">
+            <div class="quick-commands">
+                <button @onclick="() => SendCommand(\"/new\")" class="command-btn">/new</button>
+                <button @onclick="() => SendCommand(\"/docs\")" class="command-btn">/docs</button>
+                <button @onclick="() => SendCommand(\"/track\")" class="command-btn">/track</button>
+            </div>
+            <div class="input-group">
+                <input type="text" 
+                       class="form-control" 
+                       @bind="currentMessage" 
+                       @bind:event="oninput"
+                       @onkeydown="HandleKeyDown"
+                       placeholder="Ask about vehicle fitness, NHT, taxes..." 
+                       disabled="@isLoading" />
+                <button class="btn btn-primary" @onclick="SendMessage" disabled="@(isLoading || string.IsNullOrWhiteSpace(currentMessage))">
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="context-rail">
+        <h4>Task Progress</h4>
+        
+        @if (currentTask != null)
+        {
+            <div class="task-card">
+                <h5>@currentTask.Service?.Title ?? "Current Task"</h5>
+                <div class="progress mb-2">
+                    <div class="progress-bar" style="width: @(currentTask.ProgressPercent)%">@currentTask.ProgressPercent%</div>
+                </div>
+                <div class="task-status">Status: <strong>@currentTask.Status</strong></div>
+                @if (currentTask.Deadline.HasValue)
+                {
+                    <div class="task-deadline">
+                        Deadline: @currentTask.Deadline.Value.ToLocalTime().ToString("MMM dd, yyyy")
+                    </div>
+                }
+            </div>
+            
+            @if (currentTracker != null)
+            {
+                <div class="tracker-card mt-3">
+                    <h6>Tracker Status</h6>
+                    <div class="status-pill status-@currentTracker.Status.ToString().ToLower()">
+                        @currentTracker.Status
+                    </div>
+                    <p class="small mt-2">@currentTracker.StatusMessage</p>
+                    <button class="btn btn-sm btn-outline-primary mt-2" @onclick="ForceTrackerUpdate">
+                        Force Update
+                    </button>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state">
+                <p>No active task. Start by asking about a service!</p>
+            </div>
+        }
+
+        <div class="connection-status mt-3">
+            <small class="@(isConnected ? "text-success" : "text-danger")">
+                @(isConnected ? "● Connected" : "○ Disconnected")
+            </small>
+        </div>
+    </div>
+</div>
+
+@code {
+    private HubConnection? hubConnection;
+    private List<ChatMessage> messages = new();
+    private string currentMessage = "";
+    private bool isLoading = false;
+    private bool isConnected = false;
+    private string userId = $"user-{Guid.NewGuid().ToString()[..8]}";
+    private TaskEntity? currentTask;
+    private Tracker? currentTracker;
+    private ElementReference messagesContainer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await InitializeSignalR();
+        
+        // Send welcome message
+        messages.Add(new ChatMessage
+        {
+            Text = "Welcome to GOJ Hub Assistant! I can help you with Jamaican government services like vehicle fitness & registration, NHT benefits, and tax services. What would you like to know?",
+            Role = MessageRole.Assistant,
+            Timestamp = DateTime.UtcNow
+        });
+    }
+
+    private async Task InitializeSignalR()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl("https://localhost:7001/chathub?userId=" + userId)
+            .WithAutomaticReconnect()
+            .Build();
+
+        hubConnection.On<ChatMessage>("ReceiveMessage", (message) =>
+        {
+            messages.Add(message);
+            InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.On<TaskEntity>("TaskUpdated", (task) =>
+        {
+            currentTask = task;
+            InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.On<Tracker>("TrackerUpdated", (tracker) =>
+        {
+            currentTracker = tracker;
+            InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.Reconnecting += (error) =>
+        {
+            isConnected = false;
+            InvokeAsync(StateHasChanged);
+            return Task.CompletedTask;
+        };
+
+        hubConnection.Reconnected += (connectionId) =>
+        {
+            isConnected = true;
+            InvokeAsync(StateHasChanged);
+            return Task.CompletedTask;
+        };
+
+        try
+        {
+            await hubConnection.StartAsync();
+            isConnected = true;
+            Logger.LogInformation("SignalR Connected");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error connecting to SignalR");
+            isConnected = false;
+        }
+    }
+
+    private async Task SendMessage()
+    {
+        if (string.IsNullOrWhiteSpace(currentMessage) || isLoading)
+            return;
+
+        var messageText = currentMessage;
+        currentMessage = "";
+        isLoading = true;
+
+        try
+        {
+            var request = new ChatRequest
+            {
+                UserId = userId,
+                Message = messageText,
+                CurrentTaskId = currentTask?.Id
+            };
+
+            var response = await Http.PostAsJsonAsync("api/chat", request);
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                messages.Add(new ChatMessage
+                {
+                    Text = "Sorry, I encountered an error processing your request. Please try again.",
+                    Role = MessageRole.System,
+                    Timestamp = DateTime.UtcNow
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error sending message");
+            messages.Add(new ChatMessage
+            {
+                Text = "Sorry, I'm having trouble connecting. Please check if the API is running.",
+                Role = MessageRole.System,
+                Timestamp = DateTime.UtcNow
+            });
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task SendCommand(string command)
+    {
+        currentMessage = command;
+        await SendMessage();
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !e.ShiftKey)
+        {
+            SendMessage();
+        }
+    }
+
+    private async Task ForceTrackerUpdate()
+    {
+        if (currentTracker == null) return;
+
+        try
+        {
+            // This would call an API endpoint to force update
+            Logger.LogInformation("Force updating tracker {TrackerId}", currentTracker.Id);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error force updating tracker");
+        }
+    }
+
+    private string GetMessageClass(MessageRole role)
+    {
+        return role switch
+        {
+            MessageRole.User => "message-user",
+            MessageRole.Assistant => "message-assistant",
+            MessageRole.System => "message-system",
+            _ => ""
+        };
+    }
+
+    private RenderFragment RenderRichContent(ChatMessage message)
+    {
+        return builder =>
+        {
+            try
+            {
+                switch (message.RichContentType)
+                {
+                    case RichContentType.ServiceChips:
+                        var services = JsonSerializer.Deserialize<List<Service>>(message.RichContentJson!);
+                        if (services != null)
+                        {
+                            builder.OpenElement(0, "div");
+                            builder.AddAttribute(1, "class", "service-chips");
+                            
+                            foreach (var service in services)
+                            {
+                                builder.OpenElement(2, "button");
+                                builder.AddAttribute(3, "class", "chip");
+                                builder.AddAttribute(4, "onclick", EventCallback.Factory.Create(this, () => SelectService(service)));
+                                builder.AddContent(5, service.Title);
+                                builder.CloseElement();
+                            }
+                            
+                            builder.CloseElement();
+                        }
+                        break;
+
+                    case RichContentType.WizardQuickReplies:
+                        var options = JsonSerializer.Deserialize<string[]>(message.RichContentJson!);
+                        if (options != null)
+                        {
+                            builder.OpenElement(0, "div");
+                            builder.AddAttribute(1, "class", "quick-replies");
+                            
+                            foreach (var option in options)
+                            {
+                                builder.OpenElement(2, "button");
+                                builder.AddAttribute(3, "class", "quick-reply-btn");
+                                builder.AddAttribute(4, "onclick", EventCallback.Factory.Create(this, () => SendQuickReply(option)));
+                                builder.AddContent(5, option);
+                                builder.CloseElement();
+                            }
+                            
+                            builder.CloseElement();
+                        }
+                        break;
+
+                    case RichContentType.DocumentCarousel:
+                        builder.OpenElement(0, "div");
+                        builder.AddAttribute(1, "class", "document-carousel");
+                        builder.AddContent(2, "Documents available (see console for links)");
+                        builder.CloseElement();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error rendering rich content");
+            }
+        };
+    }
+
+    private async Task SelectService(Service service)
+    {
+        currentMessage = $"Tell me more about {service.Title}";
+        await SendMessage();
+    }
+
+    private async Task SendQuickReply(string reply)
+    {
+        currentMessage = reply;
+        await SendMessage();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection != null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}
